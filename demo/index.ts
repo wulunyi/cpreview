@@ -2,8 +2,8 @@ import loadImg from '../src/utils/loadimage';
 import Board from '../src/core/board';
 import Cpreview from '../src/cpreview';
 
-const testSrc = 'https://si.geilicdn.com/bj-IM-160326222-1523169525533-443806348-unadjust_691_256.jpg?w=691&h=691';
-
+const hImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1520394704121-29645018_750_2297.jpg?w=750&h=750';
+const wImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1523418545326-727807039_1280_960.jpg?w=1280&h=1280'
 // async function testLoadImg(src: string): Promise<any> {
 //   try {
 //     let imgEle: HTMLImageElement = await loadImg(src);
@@ -21,7 +21,7 @@ const canvasEle = document.getElementById('canvas');
 
 const params = {
   canvas: <HTMLCanvasElement>canvasEle,
-  src: testSrc
+  src: wImgSrc
 };
 
 const board = new Cpreview(params);

@@ -1,31 +1,35 @@
 // 预览库
-import Board, {BoardCtorParam, Status} from './core/board';
+import Board, { BoardCtorParam, Status } from "./core/board";
+import calcInitStatus, {join as getInitStatus} from "./calc/calc.initstatus";
 
 interface CpreviewCtor {
   new (params: BoardCtorParam): CpreviewClass;
 }
 
-interface CpreviewClass {
-
-}
+interface CpreviewClass {}
 
 export default class Cpreview extends Board implements CpreviewClass {
-  private currStatus: Status = {
-    ox: 0,
-    oy: 0,
-    sx: 0,
-    sy: 0,
-    scale: 1,
-    rotate: 0,
-  };
-
-  private targetStatus: Status | null = null;
+  private currStatus: Status = getInitStatus();
+  private targetStatus: Status = getInitStatus();
 
   constructor(params: BoardCtorParam) {
     super(params);
+
+    console.log('loading');
   }
 
   onReady() {
-    this.draw(this.currStatus);
+    this.targetStatus = calcInitStatus({
+      sw: this.sW,
+      sh: this.sH,
+      dw: this.w,
+      dh: this.h
+    });
+
+    this.draw(this.targetStatus, () => {
+      this.currStatus = Object.assign({}, this.targetStatus);
+      
+      console.log('done');
+    });
   }
 }
