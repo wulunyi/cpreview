@@ -6,7 +6,8 @@
   "author": "吴伦毅 <wulunyi@weidian.com>",
   "license": "MIT",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "parcel ./demo/index.html"
   },
   "dependencies": {
     "@types/jest": "^22.2.2",

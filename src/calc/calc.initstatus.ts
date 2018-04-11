@@ -9,7 +9,18 @@ export interface Params {
   dh: number;
 }
 
-export function join(params?: { [propsName: string]: number }): Status {
+export interface JoinParamsInterface {
+  ox?: number;
+  oy?: number;
+  sx?: number;
+  sy?: number;
+  dw?: number;
+  dh?: number;
+  scale?: number;
+  rotate?: number;
+}
+
+export function join(params?: JoinParamsInterface): Status {
   let init = {
     ox: 0,
     oy: 0,
