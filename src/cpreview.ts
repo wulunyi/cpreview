@@ -10,6 +10,11 @@ interface CpreviewCtor {
   new (params: BoardCtorParam): CpreviewClass;
 }
 
+interface CoordRange {
+  min: number;
+  max: number;
+}
+
 interface CpreviewClass {
   translate: (mx: number, my: number, soft: boolean, done?: () => void) => void;
   rotate: (angle: number, soft: boolean, done?: () => void) => void;
@@ -22,6 +27,10 @@ interface CpreviewClass {
     soft: boolean,
     done?: () => void
   ) => void;
+  getCoordXRange: () => CoordRange;
+  getCoordYRange: () => CoordRange;
+  getImgXRagne: () => CoordRange;
+  getImgYRange: () => CoordRange;
 }
 
 export default class Cpreview extends Board implements CpreviewClass {
@@ -42,8 +51,9 @@ export default class Cpreview extends Board implements CpreviewClass {
     this.targetStatus = calcInitStatus({
       sw: this.sW,
       sh: this.sH,
-      dw: this.w,
-      dh: this.h
+      w: this.w,
+      h: this.h,
+      rotate: 0
     });
 
     this.draw(this.targetStatus, () => {
@@ -52,7 +62,7 @@ export default class Cpreview extends Board implements CpreviewClass {
 
       Promise.resolve().then(() => {
         // 触发完成事件
-        console.log('done currStatus', status);
+        console.log('done currStatus', this.currStatus);
       });
     });
   }
@@ -63,6 +73,7 @@ export default class Cpreview extends Board implements CpreviewClass {
     });
   }
 
+  // 变换
   translate(
     mx: number,
     my: number,
@@ -100,5 +111,34 @@ export default class Cpreview extends Board implements CpreviewClass {
 
       isFunction(done) && done(this.targetStatus);
     });
+  }
+
+  // 坐标
+  getCoordXRange(): CoordRange {
+    return {
+      min: 0,
+      max: this.w
+    }
+  }
+
+  getCoordYRange(): CoordRange {
+    return {
+      min: 0,
+      max: this.h
+    }
+  };
+
+  getImgXRagne(): CoordRange {
+    return {
+      min: 0,
+      max: 0
+    }
+  }
+
+  getImgYRange (): CoordRange {
+    return {
+      min: 0,
+      max: 0
+    }
   }
 }

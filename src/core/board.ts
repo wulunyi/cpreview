@@ -6,6 +6,7 @@ import getElementSize from '../utils/elementsize';
 import getOfflineCanvas from '../utils/offlinecanvas';
 import toInit from '../calc/tointeger';
 import { isFunction } from 'lodash';
+import RotateBoard from './rotateboard';
 
 export interface BoardCtorParam {
   canvas: HTMLCanvasElement; // Element 元素
@@ -27,8 +28,8 @@ export interface Status {
   oy: number;
   scale: number;
   rotate: number;
-  sx: number;
-  sy: number;
+  dx: number;
+  dy: number;
   dw: number;
   dh: number;
 }
@@ -52,7 +53,7 @@ export default class Board implements BoardClass {
   private dpr: number = 1; // 设备 dpr
   private ctxW: number = 0; // 绘制面板宽
   private ctxH: number = 0; // 绘制面板高
-  private offlineCanvas: HTMLCanvasElement | null = null;
+  private rotateBoard: RotateBoard | null = null;
 
   // public 数据
   public w: number = 0; // 元素宽
@@ -112,14 +113,10 @@ export default class Board implements BoardClass {
   }
 
   private readyofflineCanvas() {
+    this.rotateBoard = new RotateBoard(<HTMLImageElement>this.img);
+
     this.sW = (<HTMLImageElement>this.img).width;
     this.sH = (<HTMLImageElement>this.img).height;
-
-    this.offlineCanvas = getOfflineCanvas({
-      img: <HTMLImageElement>this.img,
-      sw: this.sW,
-      sh: this.sH
-    });
 
     this.onReady();
   }
@@ -149,7 +146,7 @@ export default class Board implements BoardClass {
   draw(params: Status, fn?: () => void) {
     // 对应到绘制空间坐标
     const { x: vox, y: voy } = this.coordRToVP({ x: params.ox, y: params.oy });
-    const { x: vsx, y: vsy } = this.coordRToVP({ x: params.sx, y: params.sy });
+    const { x: vdx, y: vdy } = this.coordRToVP({ x: params.dx, y: params.dy });
     const vdw = toInit(params.dw * this.dpr);
     const vdh = toInit(params.dh * this.dpr);
 
@@ -164,18 +161,16 @@ export default class Board implements BoardClass {
     // 缩放
     this.ctx.scale(params.scale, params.scale);
 
-    // 旋转
-    this.ctx.rotate(params.rotate * Math.PI / 180);
-
     // 绘制
     this.ctx.drawImage(
-      <HTMLCanvasElement>this.offlineCanvas,
-      0,
-      0,
+      // 旋转
+      (<RotateBoard>this.rotateBoard).rotate(toInit(params.rotate)),
+      (<RotateBoard>this.rotateBoard).startX,
+      (<RotateBoard>this.rotateBoard).startY,
       this.sW,
       this.sH,
-      vsx,
-      vsy,
+      vdx,
+      vdy,
       vdw,
       vdh
     );
