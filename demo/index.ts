@@ -21,7 +21,7 @@ const canvasEle = document.getElementById('canvas');
 
 const params = {
   canvas: <HTMLCanvasElement>canvasEle,
-  src: wImgSrc
+  src: hImgSrc
 };
 
 const board = new Cpreview(params);

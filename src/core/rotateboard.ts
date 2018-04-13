@@ -12,6 +12,9 @@ interface RotateBoardClass {
   rotate: (angle: number) => HTMLCanvasElement;
 }
 
+/**
+ * 正方形离屏幕 canvas 负责旋转
+ */
 export default class RotateBoard implements RotateBoardClass {
   public canvas: HTMLCanvasElement = document.createElement('canvas');
 
@@ -22,6 +25,7 @@ export default class RotateBoard implements RotateBoardClass {
   private oy: number = 0;
   private dx: number = 0;
   private dy: number = 0;
+  private or: number = 0; // 覆盖图片的半径
 
   public outW: number = 0;
   public outH: number = 0;
@@ -36,9 +40,13 @@ export default class RotateBoard implements RotateBoardClass {
     this.inW = imgEl.width;
     this.inH = imgEl.height;
 
-    this.outH = this.outW = Math.ceil(
-      Math.sqrt(Math.pow(this.inH / 2, 2) + Math.pow(this.inH / 2, 2))
-    ) * 2;
+    // 半径
+    this.or = Math.ceil(
+      Math.sqrt(Math.pow(this.inH, 2) + Math.pow(this.inH, 2)) / 2
+    );
+
+    // 正方形
+    this.outH = this.outW = this.or * 2;
 
     // 原点
     this.ox = this.oy = toInit(this.outW / 2);
@@ -62,12 +70,35 @@ export default class RotateBoard implements RotateBoardClass {
     });
   }
 
+  static angleT0raian(angle: number): number {
+    return angle * Math.PI / 180;
+  }
+
+  static coverReact(w: number, h: number, angle: number) {
+    let radian = RotateBoard.angleT0raian(angle);
+
+    return {
+      width: w * Math.cos(radian) + h * Math.sin(radian),
+      height: w * Math.sin(radian) + h * Math.cos(radian)
+    }
+  }
+
+  // 求最小覆盖面积矩形宽高
+  public get coverReactW() {
+    return RotateBoard.coverReact(this.inW, this.inH, <number>this.angle).width;
+  }
+
+  public get coverReactH() {
+    return RotateBoard.coverReact(this.inW, this.inH, <number>this.angle).height;
+  }
+
+  // 求最小覆盖面积矩形在 canvas 坐标系上的起点
   public get startX(): number {
-    return (this.outW - this.inW) / 2
+    return toInit((this.outW - this.coverReactW) / 2);
   }
 
   public get startY(): number {
-    return (this.outH - this.inH) / 2;
+    return toInit((this.outH - this.coverReactH) / 2);
   }
 
   rotate(angle: number) {
