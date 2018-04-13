@@ -2,10 +2,10 @@
 import toRaian from './toraian';
 
 export default function coverReact(w: number, h: number, angle: number) {
-  let radian = toRaian(angle);
+  let radian = toRaian(angle <= 90 ? angle : angle <= 180? 180 - angle : angle <= 270 ? angle % 180: 180 - (angle % 180));
 
   return {
-    width: w * Math.cos(radian) + h * Math.sin(radian),
-    height: w * Math.sin(radian) + h * Math.cos(radian)
+    width: Math.abs(w * Math.cos(radian) + h * Math.sin(radian)),
+    height: Math.abs(w * Math.sin(radian) + h * Math.cos(radian))
   }
 }

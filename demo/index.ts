@@ -2,8 +2,8 @@ import loadImg from '../src/utils/loadimage';
 import Board from '../src/core/board';
 import Cpreview from '../src/cpreview';
 
-const hImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1520394704121-29645018_750_2297.jpg?w=750&h=750';
-const wImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1523418545326-727807039_1280_960.jpg?w=1280&h=1280'
+const hImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1520394704121-29645018_750_2297.jpg';
+const wImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1523418545326-727807039_1280_960.jpg'
 // async function testLoadImg(src: string): Promise<any> {
 //   try {
 //     let imgEle: HTMLImageElement = await loadImg(src);

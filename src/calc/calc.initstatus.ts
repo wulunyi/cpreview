@@ -2,6 +2,7 @@
 import { Status } from '../core/board';
 import calcShape from './calc.shape';
 import coverReact from '../utils/coverreact';
+import {isNumber} from 'lodash';
 
 export interface Params {
   sw: number;
@@ -55,8 +56,8 @@ export default function caclInitStatus(params: Params): Status {
   // 形状
   let rotate = 0;
 
-  if (params.rotate) {
-    rotate = judgeAngle(params.rotate % 360);
+  if (isNumber(params.rotate)) {
+    rotate = params.rotate % 360 //judgeAngle(params.rotate % 360);
   }
 
   // 求旋转后覆盖矩形的最小矩形
