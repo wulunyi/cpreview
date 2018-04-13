@@ -27,10 +27,10 @@ interface CpreviewClass {
     soft: boolean,
     done?: () => void
   ) => void;
-  getCoordXRange: () => CoordRange;
-  getCoordYRange: () => CoordRange;
-  getImgXRagne: () => CoordRange;
-  getImgYRange: () => CoordRange;
+  // getCoordXRange: () => CoordRange;
+  // getCoordYRange: () => CoordRange;
+  // getImgXRagne: () => CoordRange;
+  // getImgYRange: () => CoordRange;
 }
 
 export default class Cpreview extends Board implements CpreviewClass {
@@ -111,34 +111,5 @@ export default class Cpreview extends Board implements CpreviewClass {
 
       isFunction(done) && done(this.targetStatus);
     });
-  }
-
-  // 坐标
-  getCoordXRange(): CoordRange {
-    return {
-      min: 0,
-      max: this.w
-    }
-  }
-
-  getCoordYRange(): CoordRange {
-    return {
-      min: 0,
-      max: this.h
-    }
-  };
-
-  getImgXRagne(): CoordRange {
-    return {
-      min: 0,
-      max: 0
-    }
-  }
-
-  getImgYRange (): CoordRange {
-    return {
-      min: 0,
-      max: 0
-    }
   }
 }

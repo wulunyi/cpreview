@@ -3,6 +3,7 @@
 import isImage from '../utils/isimage';
 import getOfflineCanvas from '../utils/offlinecanvas';
 import toInit from '../calc/tointeger';
+import coverReact from '../utils/coverreact';
 
 interface RotateBoardCtor {
   new (imgEl: HTMLImageElement): RotateBoardClass;
@@ -10,6 +11,11 @@ interface RotateBoardCtor {
 
 interface RotateBoardClass {
   rotate: (angle: number) => HTMLCanvasElement;
+
+  coverReactW: number; // 覆盖原始资源的矩形 width
+  coverReactH: number; // 覆盖原始资源的矩形 height
+  startX: number; // coverReact 左上角 x 坐标
+  startY: number; // coverReact 左上角 y 坐标
 }
 
 /**
@@ -70,26 +76,13 @@ export default class RotateBoard implements RotateBoardClass {
     });
   }
 
-  static angleT0raian(angle: number): number {
-    return angle * Math.PI / 180;
-  }
-
-  static coverReact(w: number, h: number, angle: number) {
-    let radian = RotateBoard.angleT0raian(angle);
-
-    return {
-      width: w * Math.cos(radian) + h * Math.sin(radian),
-      height: w * Math.sin(radian) + h * Math.cos(radian)
-    }
-  }
-
   // 求最小覆盖面积矩形宽高
   public get coverReactW() {
-    return RotateBoard.coverReact(this.inW, this.inH, <number>this.angle).width;
+    return coverReact(this.inW, this.inH, <number>this.angle).width;
   }
 
   public get coverReactH() {
-    return RotateBoard.coverReact(this.inW, this.inH, <number>this.angle).height;
+    return coverReact(this.inW, this.inH, <number>this.angle).height;
   }
 
   // 求最小覆盖面积矩形在 canvas 坐标系上的起点

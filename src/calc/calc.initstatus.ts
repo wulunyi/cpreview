@@ -1,7 +1,7 @@
 // 计算初始值
 import { Status } from '../core/board';
 import calcShape from './calc.shape';
-import RotateBoard from '../core/rotateboard';
+import coverReact from '../utils/coverreact';
 
 export interface Params {
   sw: number;
@@ -52,7 +52,6 @@ function judgeAngle(angle: number): number {
 }
 
 export default function caclInitStatus(params: Params): Status {
-  
   // 形状
   let rotate = 0;
 
@@ -61,7 +60,7 @@ export default function caclInitStatus(params: Params): Status {
   }
 
   // 求旋转后覆盖矩形的最小矩形
-  let {width, height} = RotateBoard.coverReact(params.sw, params.sh,rotate );
+  let {width, height} = coverReact(params.sw, params.sh,rotate );
   let shape = calcShape(width, height);
 
   let drawh = height * params.w / width;
