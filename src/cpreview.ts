@@ -73,7 +73,13 @@ export default class Cpreview extends Board implements CpreviewClass {
     });
   }
 
-  // 变换
+  /**
+   * 移动
+   * @param mx x 移动量
+   * @param my y 移动量
+   * @param soft 是否弹性调整到目标
+   * @param done 完成操作回调
+   */
   translate(
     mx: number,
     my: number,
@@ -83,14 +89,35 @@ export default class Cpreview extends Board implements CpreviewClass {
     this.transform(mx, my, 0, 1, soft, done);
   }
 
+  /**
+   * 旋转
+   * @param angle 旋转角度
+   * @param soft 是否弹性调整到目标状态
+   * @param done 完成操作回调
+   */
   rotate(angle: number, soft: boolean, done?: (status: Status) => void) {
     this.transform(0, 0, angle, 1, soft, done);
   }
 
+  /**
+   * 缩放
+   * @param scale 缩放倍数
+   * @param soft 是否弹性调整到目标倍数
+   * @param done 完成回调
+   */
   scale(scale: number, soft: boolean, done?: (status: Status) => void) {
     this.transform(0, 0, 0, scale, soft, done);
   }
 
+  /**
+   * 变换
+   * @param mx x 移动量
+   * @param my y 移动量
+   * @param angle 旋转角度
+   * @param scale 缩放倍数
+   * @param soft 是否弹性调整到目标状态
+   * @param done 完成回调
+   */
   transform(
     mx: number,
     my: number,
