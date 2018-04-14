@@ -5,7 +5,7 @@ import loadImage from '../utils/loadimage';
 import getElementSize from '../utils/elementsize';
 import getOfflineCanvas from '../utils/offlinecanvas';
 import toInit from '../calc/tointeger';
-import { isFunction } from 'lodash';
+import { isFunction, isNumber } from 'lodash';
 import RotateBoard from './rotateboard';
 
 export interface BoardCtorParam {
@@ -75,15 +75,11 @@ export default class Board implements BoardClass {
 
     // 保存数据
     let { w, h } = getElementSize(this.canvas);
-    this.dpr = 1//window.devicePixelRatio || 1;
     this.w = w;
     this.h = h;
-    this.ctxW = w * this.dpr;
-    this.ctxH = h * this.dpr;
 
-    // 设置绘制面板的宽高
-    this.canvas.width = this.ctxW;
-    this.canvas.height = this.ctxH;
+    // 调整 dpr
+    this.judgeDpr();
 
     // 清除下
     this.clear();
@@ -101,6 +97,16 @@ export default class Board implements BoardClass {
 
       this.toReady(this.src);
     }
+  }
+
+  private judgeDpr(dpr?: number) {
+    this.dpr = isNumber(dpr) ? dpr : 1; //(window.devicePixelRatio || 1);
+    this.ctxW = this.w * this.dpr;
+    this.ctxH = this.h * this.dpr;
+
+    // 设置绘制面板的宽高
+    this.canvas.width = this.ctxW;
+    this.canvas.height = this.ctxH;
   }
 
   private async toReady(src: string) {
@@ -141,6 +147,18 @@ export default class Board implements BoardClass {
       x: toInit(p.x * this.dpr),
       y: toInit(p.y * this.dpr)
     };
+  }
+
+  effDraw(params: Status, fn?: () => void) {
+    this.judgeDpr(0.5);
+
+    this.draw(params, fn);
+  }
+
+  normalDraw(params: Status, fn?: () => void) {
+    this.judgeDpr(1);
+
+    this.draw(params, fn);
   }
 
   draw(params: Status, fn?: () => void) {

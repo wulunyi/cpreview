@@ -38,7 +38,7 @@ hammerEl.get('doubletap').set({
 
 // 设置最小相应移动的距离
 hammerEl.get('pan').set({
-  threshold: 0.01,
+  threshold: 1,
   direction: Hammer.DIRECTION_ALL
 });
 
@@ -46,7 +46,6 @@ hammerEl.get('pan').set({
 //       'panmove': this._panMove.bind(this),
 //       'panend': this._panEnd.bind(this)
 let mx:number, my:number;
-let lastTime: number = +(new Date());
 
 hammerEl.on('panmove', (ev) => {
   if (!isNumber(mx)) {
@@ -56,26 +55,19 @@ hammerEl.on('panmove', (ev) => {
     my = ev.deltaY;
   }
 
-  
-  let newTime = +new Date();
+  board.translate(ev.deltaX - mx, ev.deltaY - my, true);
 
-  board.translate(ev.deltaX - mx, ev.deltaY - my, false, () => {
-    // console.log(newTime - lastTime);
-    // console.log(+new Date() - newTime);
-  });
-
-  console.log(newTime - lastTime);
-
-  lastTime = newTime;
   mx = ev.deltaX;
   my = ev.deltaY;
 })
 
 hammerEl.on('panend', (ev) => {
+  board.scale(1, false);
+  
   mx = 0;
   my = 0;
 })
 
 
-// // @ts-ignore
-// window.board = board;
+// @ts-ignore
+window.board = board;

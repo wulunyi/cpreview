@@ -133,7 +133,7 @@ export default class Cpreview extends Board implements CpreviewClass {
       scale: this.currStatus.scale * scale
     });
 
-    this.draw(this.targetStatus, () => {
+    (soft ? this.effDraw : this.normalDraw).call(this, this.targetStatus, () => {
       this.currStatus = Object.assign({}, this.targetStatus);
 
       isFunction(done) && done(this.targetStatus);
