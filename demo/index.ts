@@ -62,8 +62,10 @@ hammerEl.on('panmove', (ev) => {
 })
 
 hammerEl.on('panend', (ev) => {
-  board.scale(1, false);
-  
+  let offsetX = board.offsetRangeX();
+  let offsetY = board.offsetRangeY();
+  board.translate(offsetX, offsetY, false);
+
   mx = 0;
   my = 0;
 })

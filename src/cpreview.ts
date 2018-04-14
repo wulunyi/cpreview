@@ -27,6 +27,8 @@ interface CpreviewClass {
     soft: boolean,
     done?: () => void
   ) => void;
+  offsetRangeX: () => number;
+  offsetRangeY: () => number;
   // getCoordXRange: () => CoordRange;
   // getCoordYRange: () => CoordRange;
   // getImgXRagne: () => CoordRange;
@@ -138,5 +140,49 @@ export default class Cpreview extends Board implements CpreviewClass {
 
       isFunction(done) && done(this.targetStatus);
     });
+  }
+
+  private offsetRange(name: 'x' | 'y'): number {
+    let Range = {min: 0, max: 0};
+    let lName: 'dw' | 'dh' = name === 'x' ? 'dw' : 'dh';
+    let pName: 'dx' | 'dy' = name === 'x' ? 'dx' : 'dy';
+    let oName: 'ox' | 'oy' = name === 'x' ? 'ox' : 'oy';
+
+    let dl: number = this.currStatus[lName];
+    let scale: number = this.currStatus.scale;
+    let dp: number = this.currStatus[pName];
+    let op: number = this.currStatus[oName];
+
+    // 起点实际坐标
+    let realyP = dp * scale - (-op);
+
+    // 轴长度
+    let sideL = (name === 'x' ? this.w : this.h);
+
+    if (dl * scale > sideL) {
+      Range.min = sideL - dl * scale;
+    }
+
+    if (realyP < Range.min) {
+      return Range.min - realyP;
+    } else if (realyP > Range.max){
+      return Range.max - realyP;
+    }
+
+    return 0;
+  }
+
+  /**
+   * 获取 x 轴矫正偏移值
+   */
+  offsetRangeX() {
+    return this.offsetRange('x');
+  }
+
+  /**
+   * 获取 y 轴矫正偏移值
+   */
+  offsetRangeY() {
+    return this.offsetRange('y');
   }
 }
