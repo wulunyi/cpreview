@@ -75,7 +75,7 @@ export default class Board implements BoardClass {
 
     // 保存数据
     let { w, h } = getElementSize(this.canvas);
-    this.dpr = window.devicePixelRatio || 1;
+    this.dpr = 1//window.devicePixelRatio || 1;
     this.w = w;
     this.h = h;
     this.ctxW = w * this.dpr;
