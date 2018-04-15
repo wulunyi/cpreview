@@ -27,12 +27,10 @@ interface CpreviewClass {
     soft: boolean,
     done?: () => void
   ) => void;
-  offsetRangeX: () => number;
-  offsetRangeY: () => number;
-  // getCoordXRange: () => CoordRange;
-  // getCoordYRange: () => CoordRange;
-  // getImgXRagne: () => CoordRange;
-  // getImgYRange: () => CoordRange;
+  offsetRangeX: (addX?: number) => number;
+  offsetRangeY: (addY?: number) => number;
+  offsetRange: (name: 'x' | 'y', add?:number) => number;
+  getRange: (name: 'x' | 'y') => {min: number, max: number}
 }
 
 export default class Cpreview extends Board implements CpreviewClass {
@@ -142,19 +140,12 @@ export default class Cpreview extends Board implements CpreviewClass {
     });
   }
 
-  private offsetRange(name: 'x' | 'y'): number {
+  public getRange(name: 'x' | 'y'): {min: number, max: number} {
     let Range = {min: 0, max: 0};
     let lName: 'dw' | 'dh' = name === 'x' ? 'dw' : 'dh';
-    let pName: 'dx' | 'dy' = name === 'x' ? 'dx' : 'dy';
-    let oName: 'ox' | 'oy' = name === 'x' ? 'ox' : 'oy';
 
     let dl: number = this.currStatus[lName];
     let scale: number = this.currStatus.scale;
-    let dp: number = this.currStatus[pName];
-    let op: number = this.currStatus[oName];
-
-    // 起点实际坐标
-    let realyP = dp * scale - (-op);
 
     // 轴长度
     let sideL = (name === 'x' ? this.w : this.h);
@@ -162,6 +153,20 @@ export default class Cpreview extends Board implements CpreviewClass {
     if (dl * scale > sideL) {
       Range.min = sideL - dl * scale;
     }
+
+    return Range;
+  }
+
+  public offsetRange(name: 'x' | 'y', add?: number): number {
+    let Range = this.getRange(name);
+    let oName: 'ox' | 'oy' = name === 'x' ? 'ox' : 'oy';
+    let op: number = this.currStatus[oName] + (add ? add : 0);
+    let scale: number = this.currStatus.scale;
+    let pName: 'dx' | 'dy' = name === 'x' ? 'dx' : 'dy';
+    let dp: number = this.currStatus[pName];
+
+    // 起点实际坐标
+    let realyP = dp * scale - (-op);
 
     if (realyP < Range.min) {
       return Range.min - realyP;
@@ -175,14 +180,14 @@ export default class Cpreview extends Board implements CpreviewClass {
   /**
    * 获取 x 轴矫正偏移值
    */
-  offsetRangeX() {
-    return this.offsetRange('x');
+  offsetRangeX(addX?: number) {
+    return this.offsetRange('x', addX);
   }
 
   /**
    * 获取 y 轴矫正偏移值
    */
-  offsetRangeY() {
-    return this.offsetRange('y');
+  offsetRangeY(addY?: number) {
+    return this.offsetRange('y', addY);
   }
 }
