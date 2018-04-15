@@ -29,8 +29,8 @@ interface CpreviewClass {
   ) => void;
   offsetRangeX: (addX?: number) => number;
   offsetRangeY: (addY?: number) => number;
-  offsetRange: (name: 'x' | 'y', add?:number) => number;
-  getRange: (name: 'x' | 'y') => {min: number, max: number}
+  offsetRange: (name: 'x' | 'y', add?: number) => number;
+  getRange: (name: 'x' | 'y') => { min: number; max: number };
 }
 
 export default class Cpreview extends Board implements CpreviewClass {
@@ -133,22 +133,26 @@ export default class Cpreview extends Board implements CpreviewClass {
       scale: this.currStatus.scale * scale
     });
 
-    (soft ? this.effDraw : this.normalDraw).call(this, this.targetStatus, () => {
-      this.currStatus = Object.assign({}, this.targetStatus);
+    (soft ? this.effDraw : this.normalDraw).call(
+      this,
+      this.targetStatus,
+      () => {
+        this.currStatus = Object.assign({}, this.targetStatus);
 
-      isFunction(done) && done(this.targetStatus);
-    });
+        isFunction(done) && done(this.targetStatus);
+      }
+    );
   }
 
-  public getRange(name: 'x' | 'y'): {min: number, max: number} {
-    let Range = {min: 0, max: 0};
+  public getRange(name: 'x' | 'y'): { min: number; max: number } {
+    let Range = { min: 0, max: 0 };
     let lName: 'dw' | 'dh' = name === 'x' ? 'dw' : 'dh';
 
     let dl: number = this.currStatus[lName];
     let scale: number = this.currStatus.scale;
 
     // 轴长度
-    let sideL = (name === 'x' ? this.w : this.h);
+    let sideL = name === 'x' ? this.w : this.h;
 
     if (dl * scale > sideL) {
       Range.min = sideL - dl * scale;
@@ -166,11 +170,20 @@ export default class Cpreview extends Board implements CpreviewClass {
     let dp: number = this.currStatus[pName];
 
     // 起点实际坐标
-    let realyP = dp * scale - (-op);
+    let realyP = dp * scale - -op;
+
+    // 次判断需重新判断
+    if (
+      Range.min === Range.max &&
+      realyP >= 0 &&
+      realyP <= (name === 'x' ? this.w : this.h)
+    ) {
+      return 0;
+    }
 
     if (realyP < Range.min) {
       return Range.min - realyP;
-    } else if (realyP > Range.max){
+    } else if (realyP > Range.max) {
       return Range.max - realyP;
     }
 

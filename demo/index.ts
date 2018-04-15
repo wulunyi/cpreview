@@ -5,7 +5,7 @@ import {isNumber} from 'lodash';
 import {linearEasingDiff} from '../src/utils/easing';
 
 const hImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1520394704121-29645018_750_2297.jpg';
-const wImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1523418545326-727807039_1280_960.jpg?w=100&h=100'
+const wImgSrc = 'https://si.geilicdn.com/bj-IM-320410048-1523418545326-727807039_1280_960.jpg'
 
 
 const canvasEl = document.getElementById('canvas');
@@ -13,7 +13,7 @@ const hammerEl = new Hammer(<HTMLCanvasElement>canvasEl);
 
 const params = {
   canvas: <HTMLCanvasElement>canvasEl,
-  src: hImgSrc
+  src: wImgSrc
 };
 
 // 创建预览面板
@@ -74,8 +74,10 @@ hammerEl.on('panmove', (ev) => {
     x = dir(x) * 2;
   }
 
-  cpreview.translate(x, y, true);
-
+  if (x !== 0 || y !== 0) {
+    cpreview.translate(x, y, true);
+  }
+  
   saveDelta(ev);
 })
 
@@ -83,11 +85,14 @@ hammerEl.on('panend', (ev) => {
   let offsetX = cpreview.offsetRangeX();
   let offsetY = cpreview.offsetRangeY();
 
-  let count = Math.floor(100 / 16);
-  let diffX = offsetX / count;
-  let diffY = offsetY / count;
+  if (offsetX !== 0 || offsetY !== 0) {
+    // 归位
+    let count = Math.floor(100 / 16);
+    let diffX = offsetX / count;
+    let diffY = offsetY / count;
 
-  esaingRunRang(count, diffX, diffY);
+    esaingRunRang(count, diffX, diffY);
+  }
 });
 
 function esaingRunRang(count: number, diffX: number, diffY: number) {
